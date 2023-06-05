@@ -1,34 +1,38 @@
 #include <string>
 #include <vector>
-#include <iostream>
-#include <algorithm>
 
 using namespace std;
 
-vector<string> answer;
-vector<int> visited;
+int road[202][202];
 
-void dfs(vector<vector<string>>& tickets, string start, int count) {
-    if (count == tickets.size() + 1) {
-        return;
-    }
-    for (int i = 0; i < tickets.size(); i++) {
-        if (tickets[i][0] == start && visited[i] == 0) {
-            cout << tickets[i][0] << " ";
-            visited[i] = 1;
-            answer.push_back(tickets[i][1]);
-            dfs(tickets, tickets[i][1], count + 1);
-            if (answer.size() == tickets.size() + 1) return;
-            visited[i] = 0;
-            answer.pop_back();
+int solution(int n, int s, int a, int b, vector<vector<int>> fares) {
+    int answer = 1e8;
+
+    for (int i = 1; i <= n; i++) {
+        for (int j = 1; j <= n; j++) {
+            road[i][j] = 1e8;
+            if (i == j) road[i][j] = 0;
         }
     }
-}
 
-vector<string> solution(vector<vector<string>> tickets) {
-    sort(tickets.begin(), tickets.end());
-    visited.resize(tickets.size() + 2);
-    answer.push_back("ICN");
-    dfs(tickets, "ICN", 0);
+    for (int i = 0; i < fares.size(); i++) {
+        road[fares[i][0]][fares[i][1]] = fares[i][2];
+        road[fares[i][1]][fares[i][0]] = fares[i][2];
+    }
+
+    //플로이드-와샬
+    for (int k = 1; k <= n; k++) {
+        for (int i = 1; i <= n; i++) {
+            for (int j = 1; j <= n; j++) {
+                road[i][j] = min(road[i][j], road[i][k] + road[k][j]);
+            }
+        }
+    }
+
+    //s->i->a, i->b
+    for (int i = 1; i <= n; i++) {
+        answer = min(answer, road[s][i] + road[i][a] + road[i][b]);
+    }
+
     return answer;
 }
