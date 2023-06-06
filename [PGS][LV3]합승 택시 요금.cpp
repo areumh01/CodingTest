@@ -20,7 +20,7 @@ int solution(int n, int s, int a, int b, vector<vector<int>> fares) {
         road[fares[i][1]][fares[i][0]] = fares[i][2];
     }
 
-    //플로이드-와샬
+
     for (int k = 1; k <= n; k++) {
         for (int i = 1; i <= n; i++) {
             for (int j = 1; j <= n; j++) {
