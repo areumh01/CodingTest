@@ -1,38 +1,21 @@
 #include <string>
 #include <vector>
-#include <sstream>
-#include <map>
-#include <iostream>
 
 using namespace std;
 
-vector<int> solution(string s) {
-    stringstream ss;
-    ss.str(s);
-    string tmp;
-    vector<int> answer;
-    map<int, int> m;
+int answer = 0;
 
-    while (getline(ss, tmp, '}')) {
-        string sub = "";
-        for (int i = 0; i < tmp.size(); i++) {
-            if (tmp[i] == ',') {
-                if (sub != "") m[stoi(sub)]++;
-                sub = "";
-                continue;
-            }
-            if (tmp[i] - '0' <= 9 && tmp[i] - '0' >= 0) {
-                sub += tmp[i];
-            }
-        }
-        if (sub != "") m[stoi(sub)]++;
+void checkAll(int index, int sum, vector<int>& numbers, int target) {
+    if (index == numbers.size()) {
+        if (sum == target)
+            answer++;
+        return;
     }
-    answer.resize(m.size());
+    checkAll(index + 1, sum - numbers[index], numbers, target);
+    checkAll(index + 1, sum + numbers[index], numbers, target);
+}
 
-    map<int, int>::iterator  it;
-    for (it = m.begin(); it != m.end(); it++) {
-        answer[m.size() - it->second] = it->first;
-    }
-
+int solution(vector<int> numbers, int target) {
+    checkAll(0, 0, numbers, target);
     return answer;
 }
