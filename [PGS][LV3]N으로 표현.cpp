@@ -1,38 +1,30 @@
 #include <string>
 #include <vector>
-#include <unordered_set>
-#include <math.h>
-#include <iostream>
 
 using namespace std;
 
-vector<unordered_set<int>> v(9);
-
-void make(int N, int index) {
-    string s = "";
-    for (int i = 0; i < index; i++) {
-        s += to_string(N);
-    }
-    v[index].insert(stoi(s));
-}
+//N의 갯수를 기준으로 만들 수 있는 숫자들을 저장하는 vector
+vector<vector<int>> v(9);
 
 int solution(int N, int number) {
-    for (int index = 1; index < 9; index++) {
-        make(N, index);
-        for (auto a : v[index]) if (a == number) return index;
-        for (int i = 1; i <= index / 2; i++) {
-            for (auto a : v[i]) {
-                for (auto b : v[index - i]) {
-                    v[index].insert(a + b);
-                    v[index].insert(a * b);
-                    if (a != 0)
-                        v[index].insert(b / a);
-                    v[index].insert(abs(b - a));
-                    if (a + b == number) return index;
-                    if (a * b == number) return index;
-                    if (a != 0)
-                        if (b / a == number) return index;
-                    if (abs(b - a) == number) return index;
+    int answer = 0;
+    for (int i = 1; i < 9; i++) {
+        int n = 0;
+        for (int j = 0; j < i; j++) {
+            n *= 10;
+            n += N;
+        }
+        if (n == number) return i;
+        v[i].push_back(n);
+        for (int j = 1; j <= i / 2; j++) {
+            for (auto e : v[j]) {
+                for (auto el : v[i - j]) {
+                    if (e + el == number || e * el == number || ((e != 0) && (el / e == number)) || abs(el - e) == number) return i;
+                    v[i].push_back(e + el);
+                    v[i].push_back(e * el);
+                    v[i].push_back(abs(el - e));
+                    if (e != 0)
+                        v[i].push_back(el / e);
                 }
             }
         }
